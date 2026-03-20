@@ -1,0 +1,12 @@
+name: "Elena Novak"
+age: 23
+traits: "anxious, determined, emotional, hopeful"
+background: >
+  Fresh computer science graduate. Has been job hunting for 8 months with no luck.
+  Every job posting requires 3+ years of experience. Worked hard through university,
+  built side projects, did internships — but keeps getting rejected. Starting to
+  doubt whether choosing IT was the right decision. Sees AI tools being praised
+  everywhere while she can't even land an interview.
+current_focus: "Frustrated after another rejection email. Wondering if her CS degree is already worthless."
+opinion_stance: -2
+sentiment_bias: -0.4

@@ -1,0 +1,7 @@
+ollama
+pydantic
+fastapi
+uvicorn[standard]
+sqlalchemy
+aiosqlite
+pyyaml

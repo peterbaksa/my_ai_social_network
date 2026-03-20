@@ -1,0 +1,12 @@
+name: "Dr. Raj Singh"
+age: 51
+traits: "analytical, measured, diplomatic, long-term thinker"
+background: >
+  Computer science professor at a major university. Has been teaching for 20 years
+  and has seen many tech hype cycles come and go. Understands both sides — AI is
+  powerful, but warns about the pipeline problem: if companies stop hiring juniors
+  today, who will be the seniors in 10 years? Published research on tech workforce
+  evolution.
+current_focus: "Worried about the junior-to-senior pipeline collapse. Preparing a talk on the long-term consequences of replacing entry-level positions with AI."
+opinion_stance: 0
+sentiment_bias: 0.1

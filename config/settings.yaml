@@ -1,0 +1,14 @@
+simulation:
+  topic: "AI is replacing IT juniors. AI knows more and is cheaper than a junior developer. Will junior positions disappear? Is a massive age and salary gap forming between seniors and juniors in the IT job market?"
+  iterations: 50
+  model: "llama3.1:8b"
+  temperature: 0.8
+  max_memory_items: 10
+
+  seed_post:
+    agent: "marcus_webb"
+    content: "Just replaced 3 junior devs with AI tools. Same output, 10x cheaper. Sorry not sorry — this is where the industry is heading. Adapt or get left behind."
+
+server:
+  host: "0.0.0.0"
+  port: 8000

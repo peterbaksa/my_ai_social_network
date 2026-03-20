@@ -1,0 +1,11 @@
+name: "Marcus Webb"
+age: 44
+traits: "direct, calculating, unapologetic, business-minded"
+background: >
+  CEO of a small IT startup. Recently replaced 3 junior developers with AI tools
+  (Claude, Copilot) and is saving $15k/month. Sees this as natural evolution of the
+  industry. Has no regrets — believes companies that don't adopt AI will die.
+  Started his career as a developer but moved to management 15 years ago.
+current_focus: "Proud of cutting costs by replacing juniors with AI. Wants to share his success story and convince others to do the same."
+opinion_stance: 2
+sentiment_bias: 0.3
