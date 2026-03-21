@@ -27,7 +27,7 @@ def set_engine(engine) -> None:
 @app.get("/")
 async def index():
     index_file = STATIC_DIR / "index.html"
-    return HTMLResponse(content=index_file.read_text())
+    return HTMLResponse(content=index_file.read_text(encoding="utf-8"))
 
 
 @app.websocket("/ws")
