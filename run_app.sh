@@ -54,12 +54,12 @@ if ! command -v ollama &> /dev/null; then
 fi
 
 # --- Check if model is downloaded ---
-echo "Checking if model '$MODEL_NAME' is available..."
+echo "Checking if model '$MODEL_NAME' is available (this may take a moment if Ollama is starting up)..."
 
-if ollama list | grep -q "$MODEL_NAME"; then
+if ollama list 2>/dev/null | grep -q "$MODEL_NAME"; then
     echo "Model '$MODEL_NAME' is already downloaded."
 else
-    echo "Model '$MODEL_NAME' not found. Downloading..."
+    echo "Model '$MODEL_NAME' not found. Downloading (this may take several minutes)..."
     echo ""
     if ollama pull "$MODEL_NAME"; then
         echo ""
