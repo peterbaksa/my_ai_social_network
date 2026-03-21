@@ -66,11 +66,11 @@ if errorlevel 1 (
 )
 
 :: --- Check if model is downloaded ---
-echo Checking if model '%MODEL_NAME%' is available (this may take a moment if Ollama is starting up)...
+echo Checking if model '%MODEL_NAME%' is available, this may take a moment if Ollama is starting up...
 
 ollama list | findstr "%MODEL_NAME%" >nul 2>&1
 if errorlevel 1 (
-    echo Model '%MODEL_NAME%' not found. Downloading (this may take several minutes)...
+    echo Model '%MODEL_NAME%' not found. Downloading, this may take several minutes...
     echo.
     ollama pull "%MODEL_NAME%"
     if errorlevel 1 (
