@@ -5,165 +5,443 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Social Network</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f0f0f;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0c0c14;
             color: #e0e0e0;
             height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
+        /* ── Header ─────────────────────────────────── */
         header {
-            background: #1a1a2e;
-            border-bottom: 1px solid #16213e;
-            padding: 16px 24px;
+            background: linear-gradient(135deg, #13132b 0%, #1a1a35 100%);
+            border-bottom: 1px solid rgba(167, 139, 250, 0.12);
+            padding: 16px 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #a78bfa, #6d28d9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
         }
 
         header h1 {
-            font-size: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+
+        header h1 span {
             color: #a78bfa;
         }
 
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
         #status {
-            font-size: 13px;
-            color: #888;
+            font-size: 12px;
+            font-weight: 500;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #status::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #666;
+            display: inline-block;
+        }
+
+        #status.connected::before { background: #34d399; }
+        #status.running::before { background: #fbbf24; animation: blink 1.2s infinite; }
+        #status.completed::before { background: #34d399; }
+        #status.disconnected::before { background: #ef4444; }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
         .controls {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         button {
-            padding: 8px 20px;
-            border: none;
-            border-radius: 6px;
+            padding: 8px 18px;
+            border: 1px solid transparent;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: opacity 0.2s;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            letter-spacing: -0.1px;
         }
 
-        button:hover { opacity: 0.85; }
-        button:disabled { opacity: 0.4; cursor: not-allowed; }
+        button:hover:not(:disabled) { transform: translateY(-1px); }
+        button:active:not(:disabled) { transform: translateY(0); }
+        button:disabled { opacity: 0.35; cursor: not-allowed; }
 
         #btn-start {
-            background: #a78bfa;
-            color: #0f0f0f;
+            background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
         }
 
         #btn-resume {
-            background: #38bdf8;
-            color: #0f0f0f;
+            background: transparent;
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        #btn-resume:hover:not(:disabled) {
+            background: rgba(56, 189, 248, 0.08);
         }
 
         #btn-stop {
-            background: #ef4444;
-            color: white;
+            background: transparent;
+            color: #f87171;
+            border-color: rgba(248, 113, 113, 0.3);
         }
 
+        #btn-stop:hover:not(:disabled) {
+            background: rgba(248, 113, 113, 0.08);
+        }
+
+        /* ── Feed ───────────────────────────────────── */
         #feed {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 24px;
+            padding: 24px 32px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #2a2a40 transparent;
         }
 
+        #feed::-webkit-scrollbar { width: 6px; }
+        #feed::-webkit-scrollbar-track { background: transparent; }
+        #feed::-webkit-scrollbar-thumb { background: #2a2a40; border-radius: 3px; }
+
+        /* ── Iteration Marker ───────────────────────── */
         .iteration-marker {
-            text-align: center;
-            color: #555;
-            font-size: 12px;
-            padding: 8px 0;
-            border-top: 1px solid #222;
-            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0 4px;
+            margin-top: 6px;
         }
 
+        .iteration-marker::before,
+        .iteration-marker::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #2a2a40, transparent);
+        }
+
+        .iteration-marker span {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #555;
+            white-space: nowrap;
+        }
+
+        /* ── Post Card ──────────────────────────────── */
         .post {
-            background: #1a1a2e;
-            border-radius: 10px;
-            padding: 14px 18px;
-            max-width: 700px;
+            background: #151525;
+            border: 1px solid #1e1e35;
+            border-radius: 14px;
+            padding: 16px 20px;
+            max-width: 660px;
             width: 100%;
             margin: 0 auto;
-            border-left: 3px solid #333;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.3s ease;
         }
 
-        .post.action-post { border-left-color: #a78bfa; }
-        .post.action-comment { border-left-color: #38bdf8; }
-        .post.action-like { border-left-color: #fbbf24; }
+        .post:hover {
+            border-color: #2a2a45;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         .post-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .post-header-text {
+            flex: 1;
+            min-width: 0;
         }
 
         .agent-name {
             font-weight: 600;
             font-size: 14px;
+            color: #fff;
         }
 
         .post-meta {
             font-size: 11px;
-            color: #666;
+            color: #555;
+            margin-top: 1px;
+        }
+
+        .action-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .badge-post {
+            color: #a78bfa;
+            background: rgba(167, 139, 250, 0.1);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+        }
+
+        .badge-comment {
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .badge-like {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.2);
         }
 
         .post-target {
             font-size: 12px;
-            color: #888;
-            margin-bottom: 4px;
+            color: #777;
+            margin-bottom: 8px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            border-left: 2px solid #333;
         }
 
         .post-content {
             font-size: 14px;
-            line-height: 1.5;
-            color: #ccc;
+            line-height: 1.65;
+            color: #bbb;
+            word-wrap: break-word;
         }
 
+        /* ── Agent Colors ───────────────────────────── */
+        .agent-marcus_webb .agent-name { color: #f87171; }
+        .agent-marcus_webb .avatar { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+
+        .agent-elena_novak .agent-name { color: #38bdf8; }
+        .agent-elena_novak .avatar { background: linear-gradient(135deg, #38bdf8, #0284c7); }
+
+        .agent-dr_raj_singh .agent-name { color: #34d399; }
+        .agent-dr_raj_singh .avatar { background: linear-gradient(135deg, #34d399, #059669); }
+
+        .agent-kira_tanaka .agent-name { color: #fbbf24; }
+        .agent-kira_tanaka .avatar { background: linear-gradient(135deg, #fbbf24, #d97706); }
+
+        .agent-dave_cooper .agent-name { color: #c084fc; }
+        .agent-dave_cooper .avatar { background: linear-gradient(135deg, #c084fc, #9333ea); }
+
+        /* ── Thinking Animation ─────────────────────── */
         .thinking {
-            text-align: center;
-            color: #a78bfa;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #666;
             font-size: 13px;
-            padding: 8px;
-            animation: pulse 1.5s infinite;
+            padding: 4px 0;
         }
 
-        @keyframes pulse {
+        .thinking-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .thinking-dots span {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #a78bfa;
+            animation: dotPulse 1.4s ease-in-out infinite;
+        }
+
+        .thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotPulse {
+            0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+            40% { opacity: 1; transform: scale(1); }
+        }
+
+        /* ── Streaming Text ─────────────────────────── */
+        .streaming .post-content::after {
+            content: '|';
+            animation: cursorBlink 0.8s step-end infinite;
+            color: #a78bfa;
+            margin-left: 2px;
+        }
+
+        @keyframes cursorBlink {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+            50% { opacity: 0; }
         }
 
+        /* ── Error ──────────────────────────────────── */
+        .post-error {
+            background: rgba(239, 68, 68, 0.06);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            border-radius: 14px;
+            padding: 14px 20px;
+            max-width: 660px;
+            width: 100%;
+            margin: 0 auto;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .post-error .post-content {
+            color: #f87171;
+            font-size: 13px;
+        }
+
+        /* ── Footer ─────────────────────────────────── */
         footer {
-            background: #1a1a2e;
-            border-top: 1px solid #16213e;
-            padding: 12px 24px;
+            background: #101020;
+            border-top: 1px solid rgba(167, 139, 250, 0.08);
+            padding: 12px 32px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 12px;
-            color: #666;
+            color: #555;
+            flex-shrink: 0;
         }
 
-        /* Agent color coding */
-        .agent-marcus_webb { color: #ef4444; }
-        .agent-elena_novak { color: #38bdf8; }
-        .agent-dr_raj_singh { color: #34d399; }
-        .agent-kira_tanaka { color: #fbbf24; }
-        .agent-dave_cooper { color: #c084fc; }
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .stat-dot.posts { background: #a78bfa; }
+        .stat-dot.comments { background: #38bdf8; }
+        .stat-dot.likes { background: #fbbf24; }
+
+        /* ── Empty State ────────────────────────────── */
+        .empty-state {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #444;
+            padding: 40px;
+        }
+
+        .empty-state-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: #151525;
+            border: 1px solid #1e1e35;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .empty-state .hint {
+            font-size: 12px;
+            color: #3a3a4a;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>AI Social Network</h1>
-        <span id="status">Disconnected</span>
+        <div class="header-left">
+            <div class="logo">N</div>
+            <h1>AI Social <span>Network</span></h1>
+        </div>
+        <div class="header-center">
+            <span id="status" class="disconnected">Disconnected</span>
+        </div>
         <div class="controls">
             <button id="btn-start" disabled>New Simulation</button>
             <button id="btn-resume" disabled>Resume Last</button>
@@ -171,48 +449,81 @@
         </div>
     </header>
 
-    <div id="feed"></div>
+    <div id="feed">
+        <div class="empty-state" id="empty-state">
+            <div class="empty-state-icon">&#x1f916;</div>
+            <p>No activity yet</p>
+            <span class="hint">Start a new simulation to watch the agents interact</span>
+        </div>
+    </div>
 
     <footer>
-        <span id="stats">Posts: 0 | Comments: 0 | Likes: 0</span>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-dot posts"></span>
+                <span>Posts: <strong id="stat-posts">0</strong></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-dot comments"></span>
+                <span>Comments: <strong id="stat-comments">0</strong></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-dot likes"></span>
+                <span>Likes: <strong id="stat-likes">0</strong></span>
+            </div>
+        </div>
         <span id="iteration-info">Waiting...</span>
     </footer>
 
     <script>
         const feed = document.getElementById('feed');
-        const status = document.getElementById('status');
-        const stats = document.getElementById('stats');
+        const statusEl = document.getElementById('status');
+        const statPosts = document.getElementById('stat-posts');
+        const statComments = document.getElementById('stat-comments');
+        const statLikes = document.getElementById('stat-likes');
         const iterInfo = document.getElementById('iteration-info');
         const btnStart = document.getElementById('btn-start');
         const btnResume = document.getElementById('btn-resume');
         const btnStop = document.getElementById('btn-stop');
+        const emptyState = document.getElementById('empty-state');
 
         let ws;
         let counts = { post: 0, comment: 0, like: 0 };
         let currentStreamEl = null;
 
-        const agentColors = {
-            'Marcus Webb': 'agent-marcus_webb',
-            'Elena Novak': 'agent-elena_novak',
-            'Dr. Raj Singh': 'agent-dr_raj_singh',
-            'Kira Tanaka': 'agent-kira_tanaka',
-            'Dave Cooper': 'agent-dave_cooper',
+        const agentMeta = {
+            'Marcus Webb':   { class: 'agent-marcus_webb',   initials: 'MW' },
+            'Elena Novak':   { class: 'agent-elena_novak',   initials: 'EN' },
+            'Dr. Raj Singh': { class: 'agent-dr_raj_singh',  initials: 'RS' },
+            'Kira Tanaka':   { class: 'agent-kira_tanaka',   initials: 'KT' },
+            'Dave Cooper':   { class: 'agent-dave_cooper',   initials: 'DC' },
         };
+
+        function setStatus(text, cls) {
+            statusEl.textContent = text;
+            statusEl.className = cls;
+        }
+
+        function hideEmptyState() {
+            if (emptyState) emptyState.style.display = 'none';
+        }
+
+        function showEmptyState() {
+            if (emptyState) emptyState.style.display = '';
+        }
 
         function connect() {
             const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
             ws = new WebSocket(`${protocol}//${location.host}/ws`);
 
             ws.onopen = () => {
-                status.textContent = 'Connected';
-                status.style.color = '#34d399';
+                setStatus('Connected', 'connected');
                 btnStart.disabled = false;
                 btnResume.disabled = false;
             };
 
             ws.onclose = () => {
-                status.textContent = 'Disconnected';
-                status.style.color = '#ef4444';
+                setStatus('Disconnected', 'disconnected');
                 btnStart.disabled = true;
                 btnResume.disabled = true;
                 btnStop.disabled = true;
@@ -228,29 +539,37 @@
                     btnStart.disabled = true;
                     btnResume.disabled = true;
                     btnStop.disabled = false;
-                    status.textContent = 'Running';
-                    status.style.color = '#fbbf24';
+                    setStatus('Running', 'running');
                     break;
 
                 case 'iteration_start':
-                    iterInfo.textContent = `Iteration ${event.iteration}/${event.total}`;
+                    hideEmptyState();
+                    iterInfo.textContent = `Iteration ${event.iteration} / ${event.total}`;
                     const marker = document.createElement('div');
                     marker.className = 'iteration-marker';
-                    marker.textContent = `— Iteration ${event.iteration} —`;
+                    marker.innerHTML = `<span>Iteration ${event.iteration}</span>`;
                     feed.appendChild(marker);
                     break;
 
-                case 'agent_thinking':
-                    // Create a streaming placeholder
+                case 'agent_thinking': {
+                    hideEmptyState();
                     currentStreamEl = createPostElement(event.agent, '', '', 'post');
-                    currentStreamEl.querySelector('.post-content').textContent = '';
-                    const thinkDot = document.createElement('span');
-                    thinkDot.className = 'thinking';
-                    thinkDot.textContent = '● thinking...';
-                    currentStreamEl.querySelector('.post-content').appendChild(thinkDot);
+                    currentStreamEl.classList.add('streaming');
+                    const contentEl = currentStreamEl.querySelector('.post-content');
+                    contentEl.innerHTML = '';
+                    const thinkEl = document.createElement('div');
+                    thinkEl.className = 'thinking';
+                    thinkEl.innerHTML = `
+                        <div class="thinking-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span>${event.agent} is thinking...</span>
+                    `;
+                    contentEl.appendChild(thinkEl);
                     feed.appendChild(currentStreamEl);
                     scrollToBottom();
                     break;
+                }
 
                 case 'stream_chunk':
                     if (currentStreamEl) {
@@ -263,7 +582,6 @@
                     break;
 
                 case 'agent_action':
-                    // Replace the streaming element with the final version
                     if (currentStreamEl) {
                         currentStreamEl.remove();
                         currentStreamEl = null;
@@ -281,15 +599,17 @@
 
                     if (counts[event.action] !== undefined) {
                         counts[event.action]++;
-                        stats.textContent = `Posts: ${counts.post} | Comments: ${counts.comment} | Likes: ${counts.like}`;
+                        statPosts.textContent = counts.post;
+                        statComments.textContent = counts.comment;
+                        statLikes.textContent = counts.like;
                     }
                     scrollToBottom();
                     break;
 
-                case 'agent_error':
+                case 'agent_error': {
                     const errEl = document.createElement('div');
-                    errEl.className = 'post';
-                    errEl.innerHTML = `<div class="post-content" style="color:#ef4444;">Error: ${event.agent} — ${event.error}</div>`;
+                    errEl.className = 'post-error';
+                    errEl.innerHTML = `<div class="post-content">${escapeHtml(event.agent)} — ${escapeHtml(event.error)}</div>`;
                     feed.appendChild(errEl);
                     if (currentStreamEl) {
                         currentStreamEl.remove();
@@ -297,10 +617,10 @@
                     }
                     scrollToBottom();
                     break;
+                }
 
                 case 'simulation_end':
-                    status.textContent = 'Completed';
-                    status.style.color = '#34d399';
+                    setStatus('Completed', 'completed');
                     btnStart.disabled = false;
                     btnResume.disabled = false;
                     btnStop.disabled = true;
@@ -311,29 +631,42 @@
 
         function createPostElement(agent, content, target, action) {
             const div = document.createElement('div');
-            div.className = `post action-${action}`;
+            const meta = agentMeta[agent] || { class: '', initials: agent.substring(0, 2).toUpperCase() };
+            div.className = `post ${meta.class}`;
 
-            const colorClass = agentColors[agent] || '';
             let actionLabel = action;
-            if (action === 'comment') actionLabel = 'replied';
-            if (action === 'like') actionLabel = 'liked';
+            if (action === 'comment') actionLabel = 'Reply';
+            else if (action === 'like') actionLabel = 'Like';
+            else if (action === 'post') actionLabel = 'Post';
+
+            const badgeClass = `badge-${action}`;
 
             let targetHtml = '';
             if (target && action === 'comment') {
-                targetHtml = `<div class="post-target">↳ replying to ${target}</div>`;
+                targetHtml = `<div class="post-target">Replying to <strong>${escapeHtml(target)}</strong></div>`;
             } else if (target && action === 'like') {
-                targetHtml = `<div class="post-target">♥ liked ${target}'s post</div>`;
+                targetHtml = `<div class="post-target">Liked <strong>${escapeHtml(target)}</strong>'s post</div>`;
             }
 
             div.innerHTML = `
                 <div class="post-header">
-                    <span class="agent-name ${colorClass}">${agent}</span>
-                    <span class="post-meta">${actionLabel}</span>
+                    <div class="avatar">${meta.initials}</div>
+                    <div class="post-header-text">
+                        <div class="agent-name">${escapeHtml(agent)}</div>
+                        <div class="post-meta">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                    </div>
+                    <span class="action-badge ${badgeClass}">${actionLabel}</span>
                 </div>
                 ${targetHtml}
-                <div class="post-content">${content}</div>
+                <div class="post-content">${escapeHtml(content)}</div>
             `;
             return div;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         function scrollToBottom() {
@@ -343,8 +676,12 @@
         btnStart.addEventListener('click', () => {
             if (ws && ws.readyState === WebSocket.OPEN) {
                 feed.innerHTML = '';
+                showEmptyState();
+                feed.appendChild(emptyState);
                 counts = { post: 0, comment: 0, like: 0 };
-                stats.textContent = 'Posts: 0 | Comments: 0 | Likes: 0';
+                statPosts.textContent = '0';
+                statComments.textContent = '0';
+                statLikes.textContent = '0';
                 ws.send('start');
             }
         });
@@ -352,8 +689,12 @@
         btnResume.addEventListener('click', () => {
             if (ws && ws.readyState === WebSocket.OPEN) {
                 feed.innerHTML = '';
+                showEmptyState();
+                feed.appendChild(emptyState);
                 counts = { post: 0, comment: 0, like: 0 };
-                stats.textContent = 'Posts: 0 | Comments: 0 | Likes: 0';
+                statPosts.textContent = '0';
+                statComments.textContent = '0';
+                statLikes.textContent = '0';
                 ws.send('resume');
             }
         });
