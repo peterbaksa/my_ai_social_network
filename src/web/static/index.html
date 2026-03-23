@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Social Network</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -120,6 +121,16 @@
             box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
         }
 
+        #btn-config {
+            background: transparent;
+            color: #a78bfa;
+            border-color: rgba(167, 139, 250, 0.3);
+        }
+
+        #btn-config:hover:not(:disabled) {
+            background: rgba(167, 139, 250, 0.08);
+        }
+
         #btn-resume {
             background: transparent;
             color: #38bdf8;
@@ -140,6 +151,187 @@
             background: rgba(248, 113, 113, 0.08);
         }
 
+        /* ── Config Panel ──────────────────────────────── */
+        .config-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .config-panel {
+            background: #151525;
+            border: 1px solid #2a2a45;
+            border-radius: 16px;
+            width: 720px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 28px 32px;
+            scrollbar-width: thin;
+            scrollbar-color: #2a2a40 transparent;
+        }
+
+        .config-panel h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .config-section { margin-bottom: 24px; }
+
+        .config-section h3 {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #a78bfa;
+            margin-bottom: 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group.full-width { grid-column: 1 / -1; }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #888;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            background: #0c0c14;
+            border: 1px solid #2a2a40;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus { border-color: #a78bfa; }
+
+        .form-group textarea { resize: vertical; min-height: 60px; }
+
+        .range-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .range-row input[type="range"] {
+            flex: 1;
+            accent-color: #a78bfa;
+        }
+
+        .range-value {
+            font-size: 12px;
+            color: #a78bfa;
+            font-weight: 600;
+            min-width: 36px;
+            text-align: right;
+        }
+
+        .agents-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .agent-card {
+            background: #0c0c14;
+            border: 1px solid #1e1e35;
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .agent-card .avatar-small {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #a78bfa, #6d28d9);
+            flex-shrink: 0;
+        }
+
+        .agent-card-info { flex: 1; min-width: 0; }
+        .agent-card-name { font-size: 13px; font-weight: 600; color: #fff; }
+        .agent-card-traits { font-size: 11px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .agent-card-stance { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; flex-shrink: 0; }
+        .stance-negative { color: #f87171; background: rgba(248, 113, 113, 0.1); }
+        .stance-neutral { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+        .stance-positive { color: #34d399; background: rgba(52, 211, 153, 0.1); }
+
+        .btn-icon {
+            width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a40;
+            background: transparent; color: #888; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; padding: 0;
+        }
+
+        .btn-icon:hover { border-color: #a78bfa; color: #a78bfa; }
+        .btn-icon.delete:hover { border-color: #f87171; color: #f87171; }
+
+        .config-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #1e1e35;
+        }
+
+        .btn-cf-primary {
+            background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+            color: #fff;
+        }
+
+        .btn-cf-secondary {
+            background: transparent;
+            color: #888;
+            border-color: #2a2a40;
+        }
+
+        .agent-modal-backdrop {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5);
+            z-index: 200; display: flex; align-items: center; justify-content: center;
+        }
+
+        .agent-modal {
+            background: #151525; border: 1px solid #2a2a45;
+            border-radius: 14px; width: 480px; padding: 24px 28px;
+        }
+
+        .agent-modal h3 { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 16px; }
+
         /* ── Feed ───────────────────────────────────── */
         #feed {
             flex: 1;
@@ -156,284 +348,173 @@
         #feed::-webkit-scrollbar-track { background: transparent; }
         #feed::-webkit-scrollbar-thumb { background: #2a2a40; border-radius: 3px; }
 
-        /* ── Iteration Marker ───────────────────────── */
         .iteration-marker {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 12px 0 4px;
-            margin-top: 6px;
+            display: flex; align-items: center; gap: 16px; padding: 12px 0 4px; margin-top: 6px;
         }
-
-        .iteration-marker::before,
-        .iteration-marker::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #2a2a40, transparent);
+        .iteration-marker::before, .iteration-marker::after {
+            content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #2a2a40, transparent);
         }
+        .iteration-marker span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: #555; white-space: nowrap; }
 
-        .iteration-marker span {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: #555;
-            white-space: nowrap;
-        }
-
-        /* ── Post Card ──────────────────────────────── */
         .post {
-            background: #151525;
-            border: 1px solid #1e1e35;
-            border-radius: 14px;
-            padding: 16px 20px;
-            max-width: 660px;
-            width: 100%;
-            margin: 0 auto;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            animation: fadeInUp 0.3s ease;
+            background: #151525; border: 1px solid #1e1e35; border-radius: 14px;
+            padding: 16px 20px; max-width: 660px; width: 100%; margin: 0 auto;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease; animation: fadeInUp 0.3s ease;
         }
+        .post:hover { border-color: #2a2a45; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        .post:hover {
-            border-color: #2a2a45;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
+        .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .avatar { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0; }
+        .post-header-text { flex: 1; min-width: 0; }
+        .agent-name { font-weight: 600; font-size: 14px; color: #fff; }
+        .post-meta { font-size: 11px; color: #555; margin-top: 1px; }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .action-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.3px; text-transform: uppercase; flex-shrink: 0; }
+        .badge-post { color: #a78bfa; background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.2); }
+        .badge-comment { color: #38bdf8; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); }
+        .badge-like { color: #fbbf24; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); }
 
-        .post-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
+        .post-target { font-size: 12px; color: #777; margin-bottom: 8px; padding: 6px 12px; background: rgba(255, 255, 255, 0.02); border-radius: 8px; border-left: 2px solid #333; }
+        .post-content { font-size: 14px; line-height: 1.65; color: #bbb; word-wrap: break-word; }
 
-        .avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-            color: #fff;
-            flex-shrink: 0;
-        }
-
-        .post-header-text {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .agent-name {
-            font-weight: 600;
-            font-size: 14px;
-            color: #fff;
-        }
-
-        .post-meta {
-            font-size: 11px;
-            color: #555;
-            margin-top: 1px;
-        }
-
-        .action-badge {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 3px 10px;
-            border-radius: 20px;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            flex-shrink: 0;
-        }
-
-        .badge-post {
-            color: #a78bfa;
-            background: rgba(167, 139, 250, 0.1);
-            border: 1px solid rgba(167, 139, 250, 0.2);
-        }
-
-        .badge-comment {
-            color: #38bdf8;
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-        }
-
-        .badge-like {
-            color: #fbbf24;
-            background: rgba(251, 191, 36, 0.1);
-            border: 1px solid rgba(251, 191, 36, 0.2);
-        }
-
-        .post-target {
-            font-size: 12px;
-            color: #777;
-            margin-bottom: 8px;
-            padding: 6px 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 8px;
-            border-left: 2px solid #333;
-        }
-
-        .post-content {
-            font-size: 14px;
-            line-height: 1.65;
-            color: #bbb;
-            word-wrap: break-word;
-        }
-
-        /* ── Agent Colors ───────────────────────────── */
         .agent-marcus_webb .agent-name { color: #f87171; }
         .agent-marcus_webb .avatar { background: linear-gradient(135deg, #ef4444, #b91c1c); }
-
         .agent-elena_novak .agent-name { color: #38bdf8; }
         .agent-elena_novak .avatar { background: linear-gradient(135deg, #38bdf8, #0284c7); }
-
         .agent-dr_raj_singh .agent-name { color: #34d399; }
         .agent-dr_raj_singh .avatar { background: linear-gradient(135deg, #34d399, #059669); }
-
         .agent-kira_tanaka .agent-name { color: #fbbf24; }
         .agent-kira_tanaka .avatar { background: linear-gradient(135deg, #fbbf24, #d97706); }
-
         .agent-dave_cooper .agent-name { color: #c084fc; }
         .agent-dave_cooper .avatar { background: linear-gradient(135deg, #c084fc, #9333ea); }
 
-        /* ── Thinking Animation ─────────────────────── */
-        .thinking {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            color: #666;
-            font-size: 13px;
-            padding: 4px 0;
-        }
-
-        .thinking-dots {
-            display: flex;
-            gap: 3px;
-        }
-
-        .thinking-dots span {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: #a78bfa;
-            animation: dotPulse 1.4s ease-in-out infinite;
-        }
-
+        .thinking { display: flex; align-items: center; gap: 4px; color: #666; font-size: 13px; padding: 4px 0; }
+        .thinking-dots { display: flex; gap: 3px; }
+        .thinking-dots span { width: 5px; height: 5px; border-radius: 50%; background: #a78bfa; animation: dotPulse 1.4s ease-in-out infinite; }
         .thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
         .thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotPulse { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
 
-        @keyframes dotPulse {
-            0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
-            40% { opacity: 1; transform: scale(1); }
-        }
+        .streaming .post-content::after { content: '|'; animation: cursorBlink 0.8s step-end infinite; color: #a78bfa; margin-left: 2px; }
+        @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* ── Streaming Text ─────────────────────────── */
-        .streaming .post-content::after {
-            content: '|';
-            animation: cursorBlink 0.8s step-end infinite;
-            color: #a78bfa;
-            margin-left: 2px;
-        }
+        .post-error { background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.15); border-radius: 14px; padding: 14px 20px; max-width: 660px; width: 100%; margin: 0 auto; animation: fadeInUp 0.3s ease; }
+        .post-error .post-content { color: #f87171; font-size: 13px; }
 
-        @keyframes cursorBlink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        /* ── Error ──────────────────────────────────── */
-        .post-error {
-            background: rgba(239, 68, 68, 0.06);
-            border: 1px solid rgba(239, 68, 68, 0.15);
-            border-radius: 14px;
-            padding: 14px 20px;
-            max-width: 660px;
-            width: 100%;
-            margin: 0 auto;
-            animation: fadeInUp 0.3s ease;
-        }
-
-        .post-error .post-content {
-            color: #f87171;
-            font-size: 13px;
-        }
-
-        /* ── Footer ─────────────────────────────────── */
-        footer {
-            background: #101020;
-            border-top: 1px solid rgba(167, 139, 250, 0.08);
-            padding: 12px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            color: #555;
-            flex-shrink: 0;
-        }
-
-        .stats-bar {
-            display: flex;
-            gap: 20px;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .stat-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-        }
-
+        footer { background: #101020; border-top: 1px solid rgba(167, 139, 250, 0.08); padding: 12px 32px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #555; flex-shrink: 0; }
+        .stats-bar { display: flex; gap: 20px; }
+        .stat-item { display: flex; align-items: center; gap: 6px; }
+        .stat-dot { width: 6px; height: 6px; border-radius: 50%; }
         .stat-dot.posts { background: #a78bfa; }
         .stat-dot.comments { background: #38bdf8; }
         .stat-dot.likes { background: #fbbf24; }
 
-        /* ── Empty State ────────────────────────────── */
-        .empty-state {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            color: #444;
-            padding: 40px;
-        }
-
-        .empty-state-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
-            background: #151525;
-            border: 1px solid #1e1e35;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-        }
-
-        .empty-state p {
-            font-size: 14px;
-            color: #555;
-        }
-
-        .empty-state .hint {
-            font-size: 12px;
-            color: #3a3a4a;
-        }
+        .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #444; padding: 40px; }
+        .empty-state-icon { width: 64px; height: 64px; border-radius: 16px; background: #151525; border: 1px solid #1e1e35; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+        .empty-state p { font-size: 14px; color: #555; }
+        .empty-state .hint { font-size: 12px; color: #3a3a4a; }
     </style>
 </head>
 <body>
+    <!-- ── Config Panel (Alpine.js, completely separate from feed) ── -->
+    <div id="config-app" x-data="configApp()" x-init="init()" style="display:contents" @open-config.window="showConfig = true">
+        <template x-if="showConfig">
+            <div class="config-overlay" @click.self="showConfig = false">
+                <div class="config-panel">
+                    <h2>Simulation Configuration</h2>
+                    <div class="config-section">
+                        <h3>Simulation Settings</h3>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>Topic</label>
+                                <textarea x-model="config.topic" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Model</label>
+                                <input type="text" x-model="config.model" placeholder="llama3.1:8b">
+                            </div>
+                            <div class="form-group">
+                                <label>Iterations</label>
+                                <input type="number" x-model.number="config.iterations" min="1" max="500">
+                            </div>
+                            <div class="form-group">
+                                <label>Temperature</label>
+                                <div class="range-row">
+                                    <input type="range" x-model.number="config.temperature" min="0" max="2" step="0.1">
+                                    <span class="range-value" x-text="config.temperature.toFixed(1)"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Memory Items</label>
+                                <input type="number" x-model.number="config.max_memory_items" min="1" max="100">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Seed Post Agent</label>
+                                <select x-model="config.seed_post_agent">
+                                    <option value="">-- None --</option>
+                                    <template x-for="a in agents" :key="a.file_key">
+                                        <option :value="a.file_key" x-text="a.name + ' (' + a.file_key + ')'"></option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Seed Post Content</label>
+                                <textarea x-model="config.seed_post_content" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="config-section">
+                        <h3>Agents (<span x-text="agents.length"></span>)</h3>
+                        <div class="agents-list">
+                            <template x-for="(agent, idx) in agents" :key="agent.file_key + idx">
+                                <div class="agent-card">
+                                    <div class="avatar-small" x-text="agent.name.split(' ').map(w=>w[0]).join('').substring(0,2)"></div>
+                                    <div class="agent-card-info">
+                                        <div class="agent-card-name" x-text="agent.name"></div>
+                                        <div class="agent-card-traits" x-text="agent.traits"></div>
+                                    </div>
+                                    <span class="agent-card-stance"
+                                        :class="agent.opinion_stance < 0 ? 'stance-negative' : agent.opinion_stance > 0 ? 'stance-positive' : 'stance-neutral'"
+                                        x-text="({'-2':'Strong Against','-1':'Against','0':'Neutral','1':'For','2':'Strong For'})[String(agent.opinion_stance)]"></span>
+                                    <div style="display:flex;gap:4px">
+                                        <button class="btn-icon" @click="editAgent(agent)" title="Edit">&#9998;</button>
+                                        <button class="btn-icon delete" @click="deleteAgent(agent.file_key)" title="Delete">&#10005;</button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <button class="btn-cf-secondary" style="margin-top:12px;width:100%" @click="addAgent()">+ Add Agent</button>
+                    </div>
+                    <div class="config-footer">
+                        <button class="btn-cf-secondary" @click="showConfig = false">Cancel</button>
+                        <button class="btn-cf-primary" @click="saveConfig()">Save &amp; Close</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template x-if="editing !== null">
+            <div class="agent-modal-backdrop" @click.self="editing = null">
+                <div class="agent-modal">
+                    <h3 x-text="editing._isNew ? 'Add Agent' : 'Edit Agent'"></h3>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Name</label><input type="text" x-model="editing.name"></div>
+                        <div class="form-group"><label>Age</label><input type="number" x-model.number="editing.age" min="1" max="120"></div>
+                        <div class="form-group full-width"><label>Traits</label><input type="text" x-model="editing.traits"></div>
+                        <div class="form-group full-width"><label>Background</label><textarea x-model="editing.background" rows="3"></textarea></div>
+                        <div class="form-group full-width"><label>Current Focus</label><textarea x-model="editing.current_focus" rows="2"></textarea></div>
+                        <div class="form-group"><label>Opinion Stance (-2 to 2)</label><div class="range-row"><input type="range" x-model.number="editing.opinion_stance" min="-2" max="2" step="1"><span class="range-value" x-text="editing.opinion_stance"></span></div></div>
+                        <div class="form-group"><label>Sentiment Bias (-1 to 1)</label><div class="range-row"><input type="range" x-model.number="editing.sentiment_bias" min="-1" max="1" step="0.1"><span class="range-value" x-text="editing.sentiment_bias.toFixed(1)"></span></div></div>
+                    </div>
+                    <div class="config-footer">
+                        <button class="btn-cf-secondary" @click="editing = null">Cancel</button>
+                        <button class="btn-cf-primary" @click="saveAgent()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
     <header>
         <div class="header-left">
             <div class="logo">N</div>
@@ -443,6 +524,7 @@
             <span id="status" class="disconnected">Disconnected</span>
         </div>
         <div class="controls">
+            <button id="btn-config">Configure</button>
             <button id="btn-start" disabled>New Simulation</button>
             <button id="btn-resume" disabled>Resume Last</button>
             <button id="btn-stop" disabled>Stop</button>
@@ -453,29 +535,23 @@
         <div class="empty-state" id="empty-state">
             <div class="empty-state-icon">&#x1f916;</div>
             <p>No activity yet</p>
-            <span class="hint">Start a new simulation to watch the agents interact</span>
+            <span class="hint">Click Configure to set up, then New Simulation to start</span>
         </div>
     </div>
 
     <footer>
         <div class="stats-bar">
-            <div class="stat-item">
-                <span class="stat-dot posts"></span>
-                <span>Posts: <strong id="stat-posts">0</strong></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-dot comments"></span>
-                <span>Comments: <strong id="stat-comments">0</strong></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-dot likes"></span>
-                <span>Likes: <strong id="stat-likes">0</strong></span>
-            </div>
+            <div class="stat-item"><span class="stat-dot posts"></span><span>Posts: <strong id="stat-posts">0</strong></span></div>
+            <div class="stat-item"><span class="stat-dot comments"></span><span>Comments: <strong id="stat-comments">0</strong></span></div>
+            <div class="stat-item"><span class="stat-dot likes"></span><span>Likes: <strong id="stat-likes">0</strong></span></div>
         </div>
         <span id="iteration-info">Waiting...</span>
     </footer>
 
     <script>
+        /* ================================================================
+           FEED + WEBSOCKET — 100% original working code, untouched
+           ================================================================ */
         const feed = document.getElementById('feed');
         const statusEl = document.getElementById('status');
         const statPosts = document.getElementById('stat-posts');
@@ -706,6 +782,61 @@
         });
 
         connect();
+
+        /* ================================================================
+           CONFIG PANEL — Alpine.js, isolated, does NOT touch the feed
+           ================================================================ */
+        document.getElementById('btn-config').addEventListener('click', () => {
+            window.dispatchEvent(new CustomEvent('open-config'));
+        });
+
+        function configApp() {
+            return {
+                showConfig: false,
+                editing: null,
+                config: { topic: '', iterations: 50, model: 'llama3.1:8b', temperature: 0.8, max_memory_items: 10, seed_post_agent: '', seed_post_content: '' },
+                agents: [],
+
+                async init() {
+                    try {
+                        const res = await fetch('/api/config');
+                        const data = await res.json();
+                        this.config = { ...data.simulation };
+                        this.agents = data.agents;
+                    } catch (e) { console.error('Failed to load config:', e); }
+                },
+
+                async saveConfig() {
+                    await fetch('/api/config', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(this.config) });
+                    this.showConfig = false;
+                },
+
+                addAgent() {
+                    this.editing = { _isNew: true, file_key: '', name: '', age: 30, traits: '', background: '', current_focus: '', opinion_stance: 0, sentiment_bias: 0.0 };
+                },
+
+                editAgent(agent) { this.editing = { ...agent, _isNew: false }; },
+
+                async saveAgent() {
+                    const a = this.editing;
+                    const payload = { file_key: a.file_key, name: a.name, age: a.age, traits: a.traits, background: a.background, current_focus: a.current_focus, opinion_stance: a.opinion_stance, sentiment_bias: a.sentiment_bias };
+                    if (a._isNew) {
+                        const res = await fetch('/api/agents', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                        this.agents.push(await res.json());
+                    } else {
+                        await fetch(`/api/agents/${a.file_key}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                        const idx = this.agents.findIndex(x => x.file_key === a.file_key);
+                        if (idx !== -1) this.agents[idx] = { ...payload, file_key: a.file_key };
+                    }
+                    this.editing = null;
+                },
+
+                async deleteAgent(fileKey) {
+                    await fetch(`/api/agents/${fileKey}`, { method: 'DELETE' });
+                    this.agents = this.agents.filter(a => a.file_key !== fileKey);
+                },
+            };
+        }
     </script>
 </body>
 </html>

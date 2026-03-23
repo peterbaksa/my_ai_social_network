@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from pathlib import Path
 
@@ -6,9 +5,7 @@ import uvicorn
 import yaml
 
 from src.agent.agent import Agent
-from src.database.repository import Repository
-from src.simulation.engine import SimulationEngine
-from src.web.app import app, set_engine
+from src.web.app import app, sim_state
 
 logging.basicConfig(
     level=logging.INFO,
@@ -52,23 +49,19 @@ def main():
     agents = load_agents(max_memory=sim.get("max_memory_items", 10))
     logger.info(f"Loaded {len(agents)} agents")
 
-    # Initialize database
-    db_path = DATA_DIR / "simulation.db"
-    repository = Repository(db_path)
+    # Populate shared simulation state
+    sim_state.topic = sim["topic"]
+    sim_state.model = sim.get("model", "llama3.1:8b")
+    sim_state.temperature = sim.get("temperature", 0.8)
+    sim_state.iterations = sim.get("iterations", 50)
+    sim_state.max_memory_items = sim.get("max_memory_items", 10)
+    sim_state.agents = agents
+    sim_state.db_path = DATA_DIR / "simulation.db"
 
-    # Create simulation engine
-    engine = SimulationEngine(
-        agents=agents,
-        repository=repository,
-        topic=sim["topic"],
-        model=sim.get("model", "llama3.1:8b"),
-        temperature=sim.get("temperature", 0.8),
-        iterations=sim.get("iterations", 50),
-        seed_post=sim.get("seed_post"),
-    )
-
-    # Wire engine into the web app
-    set_engine(engine)
+    seed = sim.get("seed_post")
+    if seed:
+        sim_state.seed_post_agent = seed.get("agent", "")
+        sim_state.seed_post_content = seed.get("content", "")
 
     logger.info(f"Starting server on {server['host']}:{server['port']}")
     logger.info(f"Open http://localhost:{server['port']} in your browser")
